@@ -246,3 +246,55 @@ getRoleId 和 update(role)  两个方法
    data定义数据( selectValue: [], //复选框选择内容封装数组)
 - 完善方法：
   复选框发生变化执行方法:handleSelectionChange
+
+### 第三次提交：
+在 src/api/system/sysUser.js 里，添加 api
+然后在src/views/system/sysUser/list.vue里添加模板部分
+  1.search-div部分
+  2.<script>模版
+  3.fetchData()列表方法 
+
+添加功能：add()  / saveOrUpdate() / save() 
+修改功能：update() / edit()
+删除功能：removeDataById
+
+**更改用户状态**
+在src/api/system/sysUser.js里 添加 updateStatus 接口
+在 src/views/system/sysUser/list.vue 中添加方法
+```
+// 切换用户状态
+    switchStatus(row) {
+      row.status = row.status === 1 ? 0 : 1
+      api.updateStatus(row.id, row.status).then(response => {
+        if (response.code) {
+          this.$message.success(response.message || '操作成功')
+          this.fetchData()
+        }
+      })
+    },
+```
+
+```
+问题：如果显示“成功”但滑块没有变：修改el-switch中的v-model
+
+vue中v-model绑定三目运算符报错解决:
+
+这是由于v-model不能使用表达式，根据需要绑定的参数使用计算属性
+       v-model ="scope.row.status===1" 换成
+        :value="scope.row.status===1"
+
+```
+
+
+
+**给用户分配角色**
+1.在src/api/system/sysRole.js中添加api
+2.修改页面:更改src/views/system/sysUser/list.vue
+- 添加分配角色按钮
+- 添加分配角色表单
+- 添加方法
+
+```
+问题：如果没有显式具体的内容：
+大概是因为把getRolesByUserId和assignRoles这两个应该写在sysRole.js里的内容卸载sysUser里了...
+```
