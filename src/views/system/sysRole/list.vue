@@ -1,5 +1,4 @@
-
-、<template>
+<template>
   <div class="app-container">
     <!--查询表单-->
     <div class="search-div">
@@ -53,6 +52,7 @@
         <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-edit" size="mini" title="修改" @click="edit(scope.row.id)" />
           <el-button type="danger" icon="el-icon-delete" size="mini" title="删除" @click="removeDataById(scope.row.id)" />
+          <el-button type="warning" icon="el-icon-baseball" size="mini" title="分配权限" @click="showAssignAuth(scope.row)" />
         </template>
       </el-table-column>
     </el-table>
@@ -89,7 +89,8 @@
 <script setup>
 // 1.引入定义接口的js文件
 import api from '@/api/system/sysRole'
-
+// eslint-disable-next-line no-unused-vars
+import sysRole from '@/api/system/sysRole'
 export default {
 // 定义数据模型/初始值
   data() {
@@ -117,7 +118,10 @@ export default {
   },
   // 定义（具体）方法
   methods: {
-
+  // 跳转分配菜单权限
+    showAssignAuth(row) {
+      this.$router.push('/system/assignAuth?id=' + row.id + '&roleName=' + row.roleName)
+    },
     // 复选框发生变化执行方法
     handleSelectionChange(selection) {
       this.selectValue = selection
@@ -127,6 +131,7 @@ export default {
     // 批量删除
     batchRemove() {
       // 判断
+      // eslint-disable-next-line eqeqeq
       if (this.selectValue.length == 0) {
         this.$message.warning('请选择要删除的记录！')
         return

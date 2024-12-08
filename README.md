@@ -250,8 +250,11 @@ getRoleId 和 update(role)  两个方法
 ### 第三次提交：
 在 src/api/system/sysUser.js 里，添加 api
 然后在src/views/system/sysUser/list.vue里添加模板部分
+
   1.search-div部分
-  2.<script>模版
+  
+   2 .script  模版
+
   3.fetchData()列表方法 
 
 添加功能：add()  / saveOrUpdate() / save() 
@@ -298,3 +301,119 @@ vue中v-model绑定三目运算符报错解决:
 问题：如果没有显式具体的内容：
 大概是因为把getRolesByUserId和assignRoles这两个应该写在sysRole.js里的内容卸载sysUser里了...
 ```
+
+
+```
+user: 更改用户状态
+role: 1. 根据用户id查询用户分配的角色
+      2. 分配角色
+
+```
+
+
+### 第四次提交：
+关联：后端第五次提交
+
+不同角色的用户登录后台管理系统拥有不同的菜单权限与功能权限。
+前端是基于模块开发的，菜单表设计也必须基于前端模板进行设计
+
+
+##### 菜单管理
+
+1. 配置路由（src/router/index.js）
+```
+{
+        name: 'sysMenu',
+        path: 'sysMenu',
+        component: () => import('@/views/system/sysMenu/list'),
+        meta: {
+          title: '菜单管理',
+          icon: 'el-icon-s-unfold'
+        }
+      },
+```
+2. 创建 src/api/system/sysMenu.js
+3. 在src/views/system/sysMenu/list.vue里添加内容
+
+说明：库存管理大项 和 系统管理里的字典管理在数据库里隐藏了。到时候可能要再手动显示出来
+
+```
+问题：删除时报错 TypeError: _vm is not a function
+
+list里面调用删除接口的方法的名字，不能和删除接口的名字相同
+  
+  removeDataById(id) {
+      }).then(() => { // promise
+        // 点击确定，远程调用ajax
+        return api.removeById(id)
+      }).then((response) => {
+      }).catch(() => {
+        this.$message.info('取消删除')
+      })
+    },
+```
+
+给list.vue 添加了一个switchStatus 方法。
+
+##### 给角色分配权限
+
+1. 配置路由（src/router/index.js）
+```
+{
+        path: 'assignAuth',
+        component: () => import('@/views/system/sysRole/assignAuth'),
+        meta: {
+          activeMenu: '/system/sysRole',
+          title: '角色授权'
+        },
+        hidden: true
+      }
+```
+
+2. 在src/api/system/sysMenu.js里添加 【查看某个角色的权限列表】 和【给某个角色授权】方法
+```
+  /*
+  查看某个角色的权限列表
+  */
+  toAssign(roleId) {
+    return request({
+      url: `${api_name}/toAssign/${roleId}`,
+      method: 'get'
+    })
+  },
+  
+    /*
+  给某个角色授权
+  */
+  doAssign(assginMenuVo) {
+    return request({
+      url: `${api_name}/doAssign`,
+      method: "post",
+      data: assginMenuVo
+    })
+  }
+```
+
+3. 在  src/views/system/sysRole/list.vue 中，添加 按钮及方法
+
+```
+<el-button type="warning" icon="el-icon-baseball" size="mini" @click="showAssignAuth(scope.row)" title="分配权限"/>
+```
+```
+ // 跳转分配菜单权限
+    showAssignAuth(row) {
+      this.$router.push('/assignAuth?id=' + row.id + '&roleName=' + row.roleName);
+    },
+```
+
+4. 在 src/views/system/sysRole/assignAuth中编写代码
+```
+报错：url 找不到：404
+把router里的404上面那个删掉
+
+再报错404：把showAssignAuth 里面的路径改成：/system/assignAuth?id= 
+
+再再报错404 ： 重启后端
+```
+
+
