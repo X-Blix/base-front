@@ -122,7 +122,6 @@ export default {
     showAssignAuth(row) {
       // this.$router.push('/system/assignAuth?id=' + row.id + '&roleName=' + row.roleName)
       this.$router.push('/assignAuth?id=' + row.id + '&roleName=' + row.roleName)
-
     },
     // 复选框发生变化执行方法
     handleSelectionChange(selection) {
